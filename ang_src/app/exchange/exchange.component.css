@@ -1,0 +1,255 @@
+.exchangeDropDownBtn {
+	width: 100%;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: left;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-color: #222;
+    background-image: none;
+    border: 1px solid #999;
+    white-space: nowrap;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 1.42857;
+    border-radius: 4px;
+	color: #fff;
+}
+.dropdown-menu {
+    list-style-type: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+.secTitle {
+    font-size: 32px;
+    line-height: 1.42857;
+    display: inline-block;
+    font-weight: bold;
+}
+.sendingLine {
+    font-size: 42px;
+    line-height: 1.42857;
+    display: inline-block;
+    font-weight: bold;
+}
+.stepTitle {
+    font-weight: bold;
+    font-size: 20px;
+}
+.sendTitle {
+    font-weight: bold;
+    font-size: 16px;
+}
+.sendStepsActive {
+    color: #eeeeee;
+} 
+.sendStepsActive img {
+    opacity: 1.0;
+}
+.sendStepsInactive {
+    color: #606060;
+}
+.sendStepsInactive img {
+    opacity: 0.5;
+}
+.leftCol {
+    padding-right:6px;
+    margin-right:0px;
+}
+.rightCol {
+    padding-left:0px;
+    margin-left:0px;
+}
+.middleDivider {
+    position: relative;
+    height:100%;
+    float: left;
+    min-height: 1px;
+    min-width:50px;
+    padding-left: 6px;
+    padding-right: 0px;
+    text-align: center;
+    box-sizing: border-box;
+}
+.arrow1 {
+    border:0px;
+    padding:0px;
+    display: inline-block;
+}
+.coinList {
+	list-style-type: none;
+    width:100%;
+    padding: 0;
+    margin: 0;
+    float: left;
+}
+.coinListLabel {
+    padding-top: 3px;
+    font-size: 18px;
+}
+.coinLabel {
+    font-size: 24px;
+    color: #fff;
+    text-align: right;
+    padding-right: 0px;
+}
+.currLabel {
+    font-size: 21px;
+    color: #fff;
+    text-align: right;
+    padding-right: 0px;
+}
+.currencyAmount {
+    font-size: 24px;
+    color: #fff;
+    text-align: right;
+}
+.currAmount, .currExAmount {
+    padding-left: 15px;
+}
+.coinAmount {
+    padding: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.coinAmountInput {
+    font-size: 24px;
+    color: #fff;
+    border:0px;
+    padding: 6px;
+}
+.selectorSpoofer {
+    display: inline-block;
+    width: 100%;
+    height: 35.5px;
+}
+.dividerLine {
+    height: 2px;
+    width: 100%;
+    display: inline-block;
+    background-color: #fff;
+}
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+  > [class*="col-sm"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+.selectionText {
+    font-size: 18px;
+}
+.sendIcons {
+    font-size:90px;
+}
+.gen {
+    color:#fff;
+}
+.fcs {
+	color:#ffc73a;
+}
+.btc {
+    color:#f7931b;
+}
+.eth {
+    color:#c1cef6;
+}
+.xrp {
+    color:#1bb4fe;
+}
+.ltc {
+    color:#c3c5c6;
+}
+
+.baseCurrencyTitle {
+	font-size: 18px;
+	color: #fff;
+}
+
+.smallCoin {
+	font-size: 12px;
+}
+.coinNameSmall {
+	font-size: 12px;
+	color: #fff;
+}
+
+.circle-wrapper {
+    position: relative;
+    display: block;
+    height: 250px;
+    width: 250px;
+    border-radius: 50%;
+}
+.circle-wrapper__circle {
+    width: 100%;
+    height: 100%;
+    -webkit-animation: rotate 3.33s linear infinite;
+    animation: rotate 3.33s linear infinite;
+}
+.circle-wrapper__circle:before, .circle-wrapper__circle:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 50%;
+}
+
+.circle-wrapper__circle:before {
+    border-radius: 200px 200px 0 0;
+    background-image: -webkit-gradient(linear, left top, right top, from(rgba(92, 167, 255, 0.5)), to(#5ca7ff));
+    background-image: linear-gradient(to right, rgba(92, 167, 255, 0.5), #5ca7ff);
+}
+.circle-wrapper__circle:after {
+    top: 50%;
+    border-radius: 0 0 200px 200px;
+    background-image: -webkit-gradient(linear, left top, right top, from(rgba(92, 167, 255, 0.5)), to(transparent));
+    background-image: linear-gradient(to right, rgba(92, 167, 255, 0.5), transparent);
+}
+.circle-wrapper__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    height: 90%;
+    width: 90%;
+    background: #222;
+    border-radius: 50%;
+}
+
+.stepCont {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    display: block;
+    text-align: center;
+    line-height: 1;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/**
+ * Additional styles.
+ */
+.description {
+  margin-bottom: 15px;
+}
+

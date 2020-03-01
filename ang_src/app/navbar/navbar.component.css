@@ -1,0 +1,70 @@
+.main-nav {
+	height: 100%; /* 100% Full-height */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    margin: 0;
+}
+.main-nav-brand {
+	float: left;
+	width:100%;
+	border: 0;
+	clear: all;
+}
+.navBar {
+	min-height: 750px;
+}
+.main-nav-cntr {
+    list-style-type: none;
+    width:100%;
+    padding: 0;
+    margin: 0;
+    float: left;
+}
+.bottomdiv {
+    width: 100%;
+    position:absolute;
+    left:15px;
+    bottom:0;
+}
+li.nav-button {
+	margin: 0;
+    padding: 25px 0px 25px 0px;
+    font-size: 25px;
+    display: inline-block;
+    list-style-type: none;
+    width:100%;
+}
+.bottomdiv li.nav-button {
+    font-size: 21px;
+}
+li.nav-button:hover {
+	background-color: #111;
+}
+li.nav-button a {
+	color: #eeeeee;
+	text-decoration: none;
+}
+li.nav-button a.active {
+	color: #fff;
+	text-decoration: none;
+}
+li.nav-button:hover a {
+	color: #fff;
+	text-decoration: none;
+}
+li.nav-button a i {
+	color: #eeeeee;
+}
+li.nav-button a.active i {
+	color: #fff;
+}
+li.nav-button:hover a i {
+	color: #fff;
+}
+
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .main-nav {padding-top: 15px;}
+    .main-nav a {font-size: 18px;}
+}

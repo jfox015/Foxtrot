@@ -1,0 +1,36 @@
+﻿<div class="container" [hidden]="userLoggedIn || registering">
+	<div class="row">
+		<div class="col-md-12">
+			<alert></alert>
+			<login></login>
+		</div>
+	</div>
+</div>
+<div class="container" [hidden]="!registering">
+	<div class="row">
+		<div class="col-md-12">
+			<alert></alert>
+			<register></register>
+		</div>
+	</div>
+</div>
+<!-- main app container -->
+<div class="container" [hidden]="!userLoggedIn || registering">
+	<div class="row">
+		<div class="col-sm-2">
+			<navbar></navbar>
+		</div>
+	    <div class="col-sm-10">
+	        <alert></alert>
+	        <router-outlet></router-outlet>
+	    </div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<br />
+			<small class="text-muted"><img src="/images/logo_foxex.png" with="35" height="32" border="0" alt="Foxex Exchange" title="Foxex Exchange" align="absmiddle" /> Powered by the Foxex International Crypto Currency Exchange.</small>
+		</div>
+	</div>
+</div>

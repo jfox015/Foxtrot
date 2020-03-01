@@ -1,0 +1,261 @@
+﻿<form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+<div class="row" [hidden]="loading || sending || completed">
+    <div class="col-md-6 col-med-offset-1 leftCol">
+        <div class="col-md-12 text-center">
+            <div class="secTitle">Exchange</div>
+        </div>
+        <br />&nbsp;<br />
+        <div class="col-md-10 leftCol">
+
+            <div class="dropdown">
+              <button class="exchangeDropDownBtn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Select...
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <ng-container *ngIf="portfolio !==null && portfolio.wallets !== null && portfolio.wallets.length > 0">
+                    <li *ngFor="let wallet of portfolio.wallets; index as i; first as isFirst" [attr.data-index]="i">
+                        <a href="#" (click)="selectCoin($event, wallet.name); false">
+                            <span class="media-left"><img [src]="'/images/curr_icon_'+wallet.name+'.png'" width="50" height="50" alt="{{ wallet.name }}" class="media-object" /></span>
+                            <span class="media-body">
+                                <span [ngClass]="wallet.name">
+                                    <span class="coinListLabel">{{ wallet.name | uppercase }}</span><br />
+                                    {{ wallet.balance }}
+                                </span> ({{ wallet.value | currency: baseCurrency :'symbol-narrow' }})
+                            </span>
+                        </a>
+                    </li>
+                </ng-container>
+              </ul>
+            </div>
+
+            <div class="col-md-12">&nbsp;</div>
+
+            <div class="col-md-12 text-center">
+                <div id="coinAmountGrp" class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default" (click)="selectAmount('all');" data-toggle="button" aria-pressed="false">All</button>
+                  <button type="button" class="btn btn-default" (click)="selectAmount('half');" data-toggle="button" aria-pressed="false">Half</button>
+                  <button type="button" class="btn btn-default" (click)="selectAmount('min');" data-toggle="button" aria-pressed="true">Min</button>
+                </div>
+            </div>
+            <div class="col-md-12">&nbsp;</div>
+
+            <div class="col-md-12">
+                <div class="coinAmount">
+                    <div class="controlGroup">
+                        <div class="col-md-8">
+                            <div [hidden]="fixedAmount" class="form-group" [ngClass]="{ 'has-error': f.submitted && !coinAmount.valid }">
+                                <input type="text" class="form-control col-md-6 coinAmountInput" name="coinAmount" [(ngModel)]="model.coinAmount" #coinAmount="ngModel" (change)="_calculateValues()" placeholder="0.00" required />
+                                <div *ngIf="f.submitted && !coinAmount.valid" class="help-block">An opening coin amount is required</div>
+                            </div>
+                            <div [hidden]="!fixedAmount">
+                                <span type="text" class="currencyAmount">{{ model.coinAmount }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 coinLabel">
+                            <span [ngClass]="selectedCoinStyle">{{ selectedCoin.symbol | uppercase }}</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-12 dividerLine"></div>
+            <div class="col-md-12">
+                <div class="currAmount">
+                    <div class="controlGroup">
+                        <div class="col-md-8">
+                            <span type="text" class="currencyAmount">{{ selectedCoinCurrencyAmount | currency: baseCurrency :'symbol-narrow' }}</span>
+                        </div>
+                        <div class="col-md-4 currLabel">
+                            <span>{{ baseCurrency }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-1 middleDivider text-center">
+            <div class="arrow1">
+                <img src="/images/two-arrows.png" width="45" height="25" alt="Exchange" title="Exchange" border="0" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 rightCol" [hidden]="noCoinSelection">
+        <div class="col-md-12 text-center">
+            <div class="secTitle">Receive</div>
+        </div>
+        <br />&nbsp;<br />
+        <div class="col-md-12">
+
+                <!-- DROP DOWN COIN LIST -->
+
+            <div class="dropdown">
+              <button class="exchangeDropDownBtn dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Select...
+                <span class="caret"></span>
+              </button>
+              <!--ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <ng-container *ngIf="portfolio !==null && portfolio.wallets !== null && portfolio.wallets.length > 0">
+                    <ng-container *ngFor="let wallet of portfolio.wallets; index as i; first as isFirst" [attr.data-index]="i">
+                        <li *ngIf="wallet.name !== selectedExCoin.symbol">
+                            <a href="#" (click)="selectCoin($event, wallet.name); false">
+                                <span class="media-left"><img [src]="'/images/curr_icon_'+wallet.name+'.png'" width="50" height="50" alt="{{ wallet.name }}" class="media-object" /></span>
+                                <span class="media-body">{{ wallet.name | uppercase }} : {{ wallet. value }}</span>
+                            </a>
+                        </li>
+                    </ng-container>
+                </ng-container>
+              </ul-->
+
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <ng-container *ngIf="coins != null && coins.length > 0">
+                    <ng-container *ngFor="let coin of coins; index as i; first as isFirst">
+                        <li *ngIf="coin.symbol !== selectedCoin.symbol" [attr.data-index]="i">
+                            <a href="#" (click)="selectExCoin($event, coin.symbol); false">
+                                <span class="media-left"><img [src]="'/images/curr_icon_'+coin.symbol+'.png'" width="50" height="50" alt="{{ coin.coinName }}" /></span>
+                                <span class="media-body">
+                                    <span [ngClass]="coin.symbol">
+                                        <span class="coinListLabel">{{ coin.coinName | uppercase }}</span>
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                    </ng-container>
+                </ng-container>
+              </ul>
+            </div>
+
+            <div class="col-md-12">&nbsp;</div>
+
+            <div class="col-md-12 selectorSpoofer">&nbsp;</div>
+            
+            <div class="col-md-12">&nbsp;</div>
+
+            <div class="col-md-12">
+                <div class="coinEx">
+                    <div class="controlGroup">
+                        <div class="col-md-8 coinExAmount">
+                            <span class="currencyAmount">{{ selectedExCoinAmount }}</span>
+                        </div>
+                        <div class="col-md-4 coinLabel">
+                            <span [ngClass]="selectedExCoinStyle">{{ selectedExCoin.symbol | uppercase }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 dividerLine"></div>
+
+            <div class="col-md-12">
+                <div class="currExAmount">
+                    <div class="controlGroup">
+                        <div class="col-md-8">
+                            <span type="text" class="currencyAmount">{{ selectedExCurrencyAmount | currency: baseCurrency :'symbol-narrow' }}</span>
+                        </div>
+                        <div class="col-md-4 currLabel">
+                            <span>{{ baseCurrency }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" [hidden]="loading || selecting">
+    <br />&nbsp;<br />
+    
+    <div class="col-md-4 col-md-offset-2 text-center" id="stepOne">
+        <div class="circle-wrapper">
+            <div class="circle-wrapper__circle" [hidden]="exchanging || completed"></div>
+            <div class="circle-wrapper__content" [ngClass]="sendStepOne">
+                <div class="stepCont">
+                    <span class="stepTitle">STEP 1</span><br />
+                    <i class="icon ion-paper-airplane sendIcons" data-pack="default"></i><br />
+                    <span class="sendTitle">SENDING</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 col-md-offset-1 text-center" id="stepTwo">
+        <div class="circle-wrapper">
+            <div class="circle-wrapper__circle" [hidden]="!exchanging"></div>
+            <div class="circle-wrapper__content" [ngClass]="sendStepTwo">
+                <div class="stepCont">
+                    <span class="stepTitle">STEP 2</span><br />
+                    <img [src]="'/images/curr_icon_'+selectedCoin.symbol+'.png'" width="105" height="105" alt="{{ selectedCoin.name }}" /><br />
+                    <span class="sendTitle">EXCHANGING</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" [hidden]="!sending">
+    <div class="col-md-12 text-center">
+        <br />&nbsp;<br />
+        <span class="sendingLine">Sending {{ selectedCoin.coinName }} to FoxEx...</span>
+    </div>
+</div>
+
+<div class="row" [hidden]="!completed">
+    <div class="col-md-12 text-center">
+        <br />&nbsp;<br />
+        <span class="sendingLine">Your exchange is now in progress!</span>
+        <br />&nbsp;<br />
+        In 30 minutes or less your <span class="selectionText" [ngClass]="selectedExCoinStyle">{{ selectedExCoin.coinName }}</span> will arrive. You can safely leave this screen or quit Foxtrot while this transaction is in progress.
+        <br />&nbsp;<br />
+        <button class="btn btn-primary btn-lg">Watch Progress</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-primary btn-lg">Exchange Again</button>
+            
+    </div>
+</div>
+
+<div class="row" [hidden]="noCoinSelection && noCoinExSelection">
+
+    <div class="col-md-6 col-med-offset-1 leftCol text-right">
+        <br />&nbsp;<br />
+        <div class="col-md-10 leftCol">
+            <span class="media-body">
+                <span [hidden]="!selecting">YOU ARE</span> EXCHANGING:<br />
+                <span class="selectionText" [ngClass]="selectedCoinStyle">{{ model.coinAmount }}&nbsp;{{ selectedCoin.coinName | uppercase }}</span><br clear="all"/>
+                {{ selectedCoinCurrencyAmount | currency: baseCurrency :'symbol-narrow' }}
+            </span>
+            <span class="media-right"><img [src]="'/images/curr_icon_'+selectedCoin.symbol+'.png'" width="60" height="60" alt="{{ selectedCoin.name }}" /></span>
+        </div>
+        <div class="col-md-1 middleDivider text-center">
+            <div class="arrow1">
+                <img src="/images/arrow.png" width="45" height="31" alt="Send Arrow" title="Send Arrow" border="0" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 rightCol text-left">
+        <br />&nbsp;<br />
+        <span class="media-left"><img [src]="'/images/curr_icon_'+selectedExCoin.symbol+'.png'" width="60" height="60" alt="{{ selectedExCoin.name }}" /></span>
+        <span class="media-body">
+            <span [hidden]="!selecting">YOU WILL RECEIVE:</span> <span [hidden]="selecting">RECEIVING:</span><br />
+            <span class="selectionText" [ngClass]="selectedExCoinStyle">{{ selectedExCoinAmount }}&nbsp;{{ selectedExCoin.coinName | uppercase }}</span><br clear="all"/>
+            {{ selectedExCurrencyAmount | currency: baseCurrency :'symbol-narrow' }}
+        </span>
+    </div>
+</div>
+
+<div class="row" [hidden]="!validSelection">
+    <div class="col-md-12 text-center" [hidden]="noCoinSelection && noCoinExSelection">
+        <br />&nbsp;<br />
+        <br />&nbsp;<br />
+        <div class="form-group">
+            <button [disabled]="!validSelection || sending" (click)="runExchange()" class="btn btn-primary btn-lg">Exchange</button>
+            <img *ngIf="sending" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+        </div>
+    </div>
+</div>
+</form>
+
+
+<div class="row" [hidden]="!loading">
+    <div class="col-md-12">LOADING EXHANCGE SCREEN</div>
+</div>

@@ -1,0 +1,173 @@
+﻿<div class="col-md-3">
+    <ul class="coinList" *ngIf="coins && coins.length > 0">
+        <li class="currItem" *ngFor="let coin of coins">
+           <a class="currLink" (click)="setCoin(coin)">{{ coin.coinName }}</a>
+        </li>
+    </ul>
+    <div  *ngIf="!coins || coins.length == 0">
+        <button (click)="seed()"><span class="ion-edit">Seed Database</span></button>
+    </div>
+</div>
+<div class="col-md-9">
+    <div class="text-center" [hidden]="loading">
+        <img [src]="'/images/curr_icon_'+coin.symbol+'.png'" width="75" height="75" alt="{{coin.coinName}}" />
+        <br />
+        <ng-container *ngIf="coin.symbol != 'gen' && wallet != null">
+            <div class="col-md-12 walletRow">
+                <span [className]="coinTitleClass">{{ wallet.coinBalance }}</span> &nbsp; <span [className]="coinNameClass">{{ coin.symbol | uppercase }}</span> 
+                <br />
+                <span class="baseCurrencyTitle">{{ (wallet.balance) | currency: baseCurrency :'symbol-narrow' }} {{ baseCurrency }}</span>
+            </div>
+            <div class="col-md-12 walletRow">
+                <button (click)="openSendWindow()" type="button" class="btn btn-warning btn-lg">Send</button> &nbsp; <button (click)="openReceiveWindow()" type="button" class="btn btn-warning btn-lg">Recieve</button>
+            </div>
+            <div class="col-md-12 walletRow">
+                <div class="transactionsList">
+                    <table class="table table-striped">
+                        <ng-container *ngIf="transactions && transactions.length > 0">
+                            <tr>
+                                <th width="15%">Date</th>
+                                <th width="15%">Type</th>
+                                <th width="40%">&nbsp;</th>
+                                <th width="15%">Amnt.</th>
+                                <th width="15%">Status</th>
+                            </tr>
+                            <tr *ngFor="let trans of transactions">
+                                <td>{{ trans.date }}</td>
+                                <td class="transactionIcon"><i class="icon ion-ios-{{ trans.type | transactionType }}" data-pack="default"></i></td>
+                                <td>&nbsp;</td>
+                                <td>{{ trans.amount }}</td>
+                                <td>{{ trans.status | transactionStatus }}</td>
+                            </tr>
+                        </ng-container>
+                        <tr *ngIf="!transactions || transactions.length == 0">
+                            <th colspan="5" class="text-center">No transactions were found.</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </ng-container>
+        <div *ngIf="coin.symbol == 'gen' && wallet == null">
+            <h2>Welcome to Foxtrot Wallet!</h2>
+            <br />
+            Select a coin type to start managing your wallet.
+        </div>
+        <div *ngIf="coin.symbol != 'gen' && wallet == null">
+            <h2>You do not yet have a wallet created for {{ coin.coinName }}</h2>
+            <br />
+            <button (click)="openCreateWallet()" type="button" class="btn btn-warning btn-lg">Create {{ coin.coinName }} Wallet</button>
+        </div>
+    </div>
+</div>
+
+<modal id="create-wallet" class="hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <button (click)="closeModal('create-wallet')" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h3 class="modal-title">Create Wallet</h3>
+        </div>
+        <div class="modal-body">
+            <h5>New {{ coin.coinName }} Wallet</h5>
+            <div class="modal-form">
+                <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !amount.valid }">
+                        <label for="amount">Enter Wallet Amount <small class="text-muted">In {{ baseCurrency | uppercase }}</small></label>
+                        <input type="text" class="form-control col-md-6" name="amount" [(ngModel)]="model.amount" #amount="ngModel" required />
+                        <div *ngIf="f.submitted && !amount.valid" class="help-block">An opening amount is required</div>
+                    </div>
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !source.valid }">
+                        <label for="source">Funding Source</label>
+                        <div class="radio-group">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="source1" name="source" class="custom-control-input" checked="" value="creditcard" [(ngModel)]="model.source" #source="ngModel">
+                                <label class="custom-control-label" for="source">Credit Card</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="source2" name="source" class="custom-control-input" value="paypal" [(ngModel)]="model.source" #source="ngModel">
+                                <label class="custom-control-label" for="customRadio2">PayPal</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="source3" name="source" class="custom-control-input" value="internal" [(ngModel)]="model.source" #source="ngModel">
+                                <label class="custom-control-label" for="customRadio3">Acount Balanace</label>
+                            </div>
+                        </div>
+                        <div *ngIf="f.submitted && !source.valid" class="help-block">A funding source is required</div>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="coin" value="{{ coin.symbol }}" />
+                        <button (click)="createWallet()" class="btn btn-primary">Create Wallet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>
+
+<modal id="send-coin" class="hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <button (click)="closeModal('send-coin')" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h3 class="modal-title">Send {{ coin.coinName }}</h3>
+        </div>
+        <div class="modal-body">
+            <div *ngIf="alrtMessage!=null" [ngClass]="{ 'alert': alrtMessage, 'alert-success': alrtMessage.type === 'success', 'alert-danger': alrtMessage.type === 'error' }">{{alrtMessage.text}}</div>
+            <div class="modal-form">
+                <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !to.valid }">
+                        <label for="to">To</label>
+                        <input type="text" class="form-control col-md-6" name="to" [(ngModel)]="model.to" #to="ngModel" (change)="_validateRecipient()" required />
+                        <div *ngIf="f.submitted && !to.valid" class="help-block">A recipiet address is required</div>
+                    </div>
+                    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !sendAmount.valid }">
+                        <label for="sendAmount">Coin Amount</label>
+                        <input type="text" class="form-control col-md-6" name="sendAmount" [(ngModel)]="model.sendAmount" #sendAmount="ngModel" (change)="_calculateValue($event)" required />
+                        <div *ngIf="f.submitted && !sendAmount.valid" class="help-block">An amount to send is required</div>
+                    </div>
+                    <div *ngIf="wallet != null" class="text-center">You are sending <span [ngClass]="wallet.coin">{{ model.sendAmount }}&nbsp;{{ coin.symbol | uppercase }}</span>&nbsp;&nbsp;<span class="currLabelSmall">({{ sendValue | currency: baseCurrency :'symbol-narrow' }} {{ baseCurrency }})</span></div>
+                    <div class="col-md-12 walletRow">
+                        <button [disabled]="!valid || sending" (click)="sendCoin()" type="button" class="btn btn-warning btn-lg">Send</button>
+                        <img *ngIf="sending" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="col-md-6 text-left">
+                AVAILABLE BALANCE:<br />
+                <span *ngIf="wallet != null" class="coinNameSmall" [ngClass]="wallet.coin">{{ wallet.coinBalance }}&nbsp;{{ coin.symbol | uppercase }}</span>  <span *ngIf="wallet != null" class="currLabelSmall">&nbsp;&nbsp;({{ wallet.balance | currency: baseCurrency :'symbol-narrow' }} {{ baseCurrency }})</span>
+            </div>
+            <div class="col-md-6 text-right">
+                COST TO SEND:<br />
+                <span *ngIf="wallet != null" class="coinNameSmall" [ngClass]="wallet.coin">{{ transaction.coinCost }}&nbsp;{{ coin.symbol | uppercase }}</span>&nbsp;&nbsp;<span *ngIf="transaction != null" class="currLabelSmall">({{ transaction.cost | currency: baseCurrency :'symbol-narrow' }} {{ baseCurrency }})</span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>
+
+<modal id="receive-coin" class="hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <button (click)="closeModal('receive-coin')" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h3 class="modal-title">Receive {{ coin.coinName }}</h3>
+        </div>
+        <div class="modal-body">
+            <div class="col-md-2">&nbsp;</div>
+            <div class="col-md-8 text-center">
+                <img src="/images/qr_code_generic.png" width="185" height="185" border="0" alt="User QA Code" title="User QA Code" />
+                <br /> <br />
+                YOUR {{ coin.coinName | uppercase }} ADDRESS
+                <br />
+                <div class="address fcs">{{ model.userIdHash }}</div>
+                <br />
+                <div class="linkbar">
+                    <a href="#"><i class="icon ion-ios-copy" data-pack="default"></i></a> &nbsp;&nbsp;&nbsp; <a href="#"><i class="icon ion-ios-printer" data-pack="default"></i></a> &nbsp;&nbsp;&nbsp; <a href="#"><i class="icon ion-ios-email" data-pack="default"></i></a> &nbsp;&nbsp;&nbsp; <a href="#"><i class="icon ion-link" data-pack="default"></i></a>
+                </div>
+            </div>
+            <div class="col-md-2">&nbsp;</div>
+        </div>
+    </div>
+
+    <div class="modal-background"></div>
+</modal>

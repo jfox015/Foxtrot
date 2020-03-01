@@ -1,0 +1,107 @@
+.coinList {
+	list-style-type: none;
+    width:100%;
+    padding: 0;
+    margin: 0;
+    float: left;
+}
+.currItem {
+	margin: 0;
+    padding: 25px 0px 25px 0px;
+    font-size: 25px;
+    display: inline-block;
+    list-style-type: none;
+    width:100%;
+}
+.currItem:hover {
+	background-color: #111;
+}
+.currLink {
+	color: #eeeeee;
+	text-decoration: none;
+}
+
+.walletRow {
+	margin:15px 0 15px 0;
+	padding: 5px 0 5px 0;
+}
+.transactionIcon {
+	font-size: 36px;
+}
+.coinTitle {
+	font-size: 54px;
+	color: #fff;
+}
+.coinName {
+	font-size: 42px;
+	color: #fff;
+}
+
+.address {
+	font-size: 28px;
+	color: #fff;
+}
+
+.baseCurrencyTitle {
+	font-size: 18px;
+	color: #fff;
+}
+
+.smallCoin {
+	font-size: 12px;
+}
+.coinNameSmall {
+	font-size: 14px;
+	color: #fff;
+}
+.currLabelSmall {
+	font-size: 12px;
+	color: #fff;
+}
+.linkbar {
+	font-size:50px;
+}
+.transactionsList {
+	max-height: 450px;
+	overflow-y: scroll;
+	overflow-x: hidden; /* Hide horizontal scrollbar */
+	border: 1px solid #e0e0e0;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #909090; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #333; 
+}
+
+.gen {
+    color:#fff;
+}
+.fcs {
+	color:#ffc73a;
+}
+.btc {
+    color:#f7931b;
+}
+.eth {
+    color:#c1cef6;
+}
+.xrp {
+    color:#1bb4fe;
+}
+.ltc {
+    color:#c3c5c6;
+}
