@@ -19,6 +19,7 @@ import { AlertService, AuthenticationService, UserService, WalletService, ModalS
 //import { JwtInterceptor } from './_helpers/index';
 //import { fakeBackendProvider } from './_helpers/index';
 
+import { AboutComponent } from './about/index';
 import { HomeComponent } from './home/index';
 import { NavbarComponent } from './navbar/index';
 import { LoginComponent, RegisterComponent, LogoutComponent, ProfileComponent } from './auth/index';
@@ -43,6 +44,7 @@ import { PortfolioComponent } from './portfolio/index';;
         }),
     ],
     declarations: [
+        AboutComponent,
         AppComponent,
         AlertComponent,
         HomeComponent,
