@@ -1,7 +1,7 @@
 /**
  *  FOXTROT
  *  
- *  Built on NodeJs, with ExpressJs, Pug Templates, Mongo and Angular Front End. 
+ *  Built on NodeJs, with Express, Pug Templates, Mongo and Angular Front End. 
  *  A derivitive of the the excellent Hackathon Starter Project 
  *  (https://github.com/sahat/hackathon-starter)
  *  
@@ -10,7 +10,8 @@
  *  @changeLog
  *  
  *  -- Feb 13 2019 -- Upgraded to Angular 7.2.4 and rxjs 6
- *  -- Feb 17 2020 -- Upgraded to Angular 9.1.0
+ *  -- Feb 17 2020 -- Upgraded to Angular 9.1
+ *  -- Mar 05 2020 -- Version 1.0 complete
  *  
  *  The MIT License (MIT)
  *  

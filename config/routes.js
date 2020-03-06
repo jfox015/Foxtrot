@@ -8,8 +8,6 @@ const multer = require('multer');
 const homeController = require('../controllers/home');
 const userController = require('../controllers/user');
 const foxtrotController = require('../controllers/foxtrot');
-//const apiController = require('../controllers/api');
-//const contactController = require('../controllers/contact');
 
 var adminController = require('../controllers/admin/admin');
 var settingsController = require('../controllers/admin/settings');

@@ -1,5 +1,5 @@
 # Foxtrot
-An example cryptocurrency exchange UI based on the MEAN stack.
+A example cryptocurrency wallet UI and backend based on the MEAN stack.
 
 ## Current Features
 
@@ -7,7 +7,7 @@ An example cryptocurrency exchange UI based on the MEAN stack.
 
 ## Technical Information
 
-- Version: 0.0.1
+- Version: 1.0 Beta
 - License: MIT License
 
 ## Installation and Usage
@@ -53,7 +53,7 @@ http://jasonwatmore.com/post/2016/09/29/angular-2-user-registration-and-login-ex
 
 ## License
 
-Copyright (c) 2018-19 Jeff Fox.
+Copyright (c) 2018-20 Jeff Fox.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to dealin the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
