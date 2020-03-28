@@ -1,5 +1,5 @@
 # Foxtrot
-A example cryptocurrency wallet UI and backend based on the MEAN stack.
+A example of a cryptocurrency wallet UI and backend based on the MEAN stack.
 
 ## Current Features
 

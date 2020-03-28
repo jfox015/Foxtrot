@@ -3,7 +3,9 @@
  *  
  *  Built on NodeJs, with Express, Pug Templates, Mongo and Angular Front End. 
  *  A derivitive of the the excellent Hackathon Starter Project 
- *  (https://github.com/sahat/hackathon-starter)
+ *  (https://github.com/sahat/hackathon-starter). Thanks also to JasonWatmore.com 
+ *  for the Angular Login/Auth example. 
+ *  (https://github.com/AureGitHub/angular2-registration-login-example-master)
  *  
  *  @author Jeff Fox (jfox015)
  *
@@ -12,6 +14,7 @@
  *  -- Feb 13 2019 -- Upgraded to Angular 7.2.4 and rxjs 6
  *  -- Feb 17 2020 -- Upgraded to Angular 9.1
  *  -- Mar 05 2020 -- Version 1.0 complete
+ *  -- Mar 28 2020 -- Directory/file cleanup
  *  
  *  The MIT License (MIT)
  *  
@@ -131,8 +134,8 @@ app.use(function (req, res, next) {
         if (!settingsObj[0]) {
           res.locals = {
               site: {
-                  siteName: "New Site",
-                  ownerName: "Not Set",
+                  siteName: "Foxtrot",
+                  ownerName: "Jeff Fox @jfox015",
                   siteYear: copyDate.getFullYear()
               },
               user: req.user

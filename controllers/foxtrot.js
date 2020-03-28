@@ -245,7 +245,6 @@ exports.getPortfolio = (req, res, next) => {
         wallets = wallets || null;
         if (wallets != null) {
           var sum = 0, walletsArr = [];
-          //console.log(wallets);
           _.each(wallets, function(wallet) {
             if (typeof wallet.coinBalance === "undefined") {
               wallet.coinBalance = exports.convertValue(wallet.balance, wallet.baseCurrency, wallet.coin);
@@ -254,9 +253,7 @@ exports.getPortfolio = (req, res, next) => {
             walletsArr.push({ value: wallet.balance, baseCurrency: wallet.baseCurrency, name: wallet.coin, 
                               balance: wallet.coinBalance, address: wallet.address 
             });
-            //console.log(walletsArr);
           }, this);
-         // console.log(walletsArr);
           var message = req.params.message || "User portfolio response";
           res.send({status:200, portfolio: {wallets: walletsArr, sum: sum }, message: message});
         } else {
@@ -465,8 +462,7 @@ exports.exchangeCoin = (req, res, next) => {
 
   exports._convertValue(req.body.coinAmount, req.body.coinFrom, req.body.coinTo).then(
     function(convAmount) {
-      //console.log("Converted Post-Transaction Currency Value = " + convAmount);
-
+      
       walletUtils.walletTransaction("remove", req.body.addressFrom, req.params.coinFrom, req.body.coinCost, req.body.coinAmount, date.toUTCString(), exports._convertValue).then(
       function() {
         //transStack.push({ model: "wallet", field: "ownerId", id: req.params.id, type: "add", amount: (parseFloat(req.body.coinAmount) + parseFloat(req.body.coinCost))});
@@ -572,15 +568,11 @@ exports._verifyRecipient = (address) => {
 exports._postTransaction = (transObj) => {
 
   return new Promise(function (fulfilled, rejected) {
-    //console.log("_postTransaction");
-    //console.log(transObj);
     var trans = new Transaction(transObj);
-    //console.log(trans);
     trans.save((err, trans) => {
       if (err) { 
         rejected({error: err });
       } else {
-        //console.log("Transaction log save operation completed");
         fulfilled(trans);
       }
     });
@@ -590,11 +582,6 @@ exports._postTransaction = (transObj) => {
 exports._convertValue = (balance, cFrom, cTo, parfulfilled = null, parrejected = null) => {
 
   return new Promise(function (fulfilled, rejected) {
-
-    /*console.log("_convertValue");
-    console.log("balance = " + balance);
-    console.log("cFrom = " + cFrom);
-    console.log("cTo = " + cTo);*/
     
     var ratesList = require('../data/current_rates.json');
     var convrate = null;
@@ -608,82 +595,12 @@ exports._convertValue = (balance, cFrom, cTo, parfulfilled = null, parrejected =
         }
       }
     }
-    //console.log("convrate = " + convrate);
-    //console.log("parsed convrate = " + parseFloat(convrate));
     
     var conversion = (balance / parseFloat(convrate));
-    //console.log("conversion = " + conversion);
     if (isNaN(conversion)) conversion = 0;
     fulfilled(conversion, parfulfilled, parrejected );
-
-    /*ExchangeTable.findOne({from: cFrom, symbol:cTo}, function(err, xchange) {
-     if (err) {
-          rejected({error: err }, parfulfilled, parrejected );
-      } else {
-          var conversion = (balance * parseFloat(xchange.conv));
-          if (isNaN(conversion)) conversion = 0;
-          fulfilled(conversion, parfulfilled, parrejected );
-      }
-    });*/
   });
 }
-/*
-exports.walletTransaction = (type, accountId, coin, cost, amount, modStamp) => {
-  
-  return new Promise(function (fulfilled, rejected) {
-    console.log("walletTransaction for " + accountId);
-    if (amount <= 0) {
-      rejected({error: "Transaction Rejected: Amount to be sent is 0 or less than 0" });
-    } else{ 
-      console.log("Amount greater than 0");
-      Wallet.findOne({ownerId: accountId, coin: coin}, function(err, wallet) {
-          if (err) {
-              rejected({error: err });
-          } else {
-        console.log("Wallet found");
-        //console.log(wallet);
-        console.log("Transaction Type = " + type);
-        console.log("Pre-Transaction Balance = " + wallet.coinBalance);
-        var coinBalance = 0;
-        if (type == "add") {
-          coinBalance = (parseFloat(wallet.coinBalance) + parseFloat(amount));
-        } else {
-          coinBalance = (parseFloat(wallet.coinBalance) - (parseFloat(amount) + parseFloat(cost)));
-          if (coinBalance < 0) 
-            rejected({error: "Transaction Rejected: Amount being sent would result in a negative account balance." });
-        }
-              console.log("coinBalance = " + coinBalance);
-              var that = this;
-              //console.log(_convertValue);
-              exports._convertValue(coinBalance, wallet.coin, wallet.baseCurrency, fulfilled, rejected = null).then(
-                function(convBalance, parfulfilled, parrejected) {
-                  console.log("Converted Value = " + convBalance);
-                  Wallet.update({ _id: wallet._id }, { $set: { coinBalance: coinBalance, balance: convBalance, lastModified: modStamp }}, function(err) {
-                    if (err) {
-                    parrejected({error: err });
-                } else {
-                    console.log("Wallet Updated");
-                    wallet.coinBalance = coinBalance;
-                    wallet.balance = convBalance;
-                    parfulfilled(wallet);
-                }
-                  });
-                }
-              ).catch(
-                  function(err, parfulfilled, parrejected) {
-                    console.log("Did we reach the cacth statement?");
-                    if (err) parrejected({error: err });
-                    else parfulfilled();
-                  }
-              );
-            }
-        });
-    }
-  });
-}
-*/
-
-
 /**
  * GET /api/seed
  * A call to populate the database with a base amount of info
@@ -822,129 +739,7 @@ exports.addCoins = (req, res, next) => {
   });
 }
 
-// EXCHANGE RATES
-// @depcrcated
-// USE STATIC /data/current_rates.json file instead
-// Test if current user has a wallet. if not, create one.
-/*exports.addExchangeTable = (req, res, next) => {
-  User.findOne({ _id: req.params.id }, (err, user) => {
-    if (err) {
-      res.status(500).send({status: 500, errors: err});
-    } else {
-      var now = new Date();
-      ExchangeTable.create({
-        _id: new mongoose.Types.ObjectId(),
-        type: 'currency',
-        symbol: 'eur',
-        from: 'usd',
-        conv: 0.83745300442153,
-        precision: 8,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },{
-        _id: new mongoose.Types.ObjectId(),
-        type: 'coin',
-        symbol: 'fcs',
-        precision: 5,
-        from: 'usd',
-        conv: 3.1034483,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },{
-        _id: new mongoose.Types.ObjectId(),
-        type: 'currency',
-        symbol: 'usd',
-        precision: 5,
-        from: 'fcs',
-        conv: 0.3222,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },{
-        _id: new mongoose.Types.ObjectId(),
-        type: 'coin',
-        symbol: 'btc',
-        precision: 5,
-        from: 'usd',
-        conv: 387241,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },{
-        _id: new mongoose.Types.ObjectId(),
-        type: 'currency',
-        symbol: 'usd',
-        precision: 5,
-        from: 'btc',
-        conv: 0.00025824,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },{
-        _id: new mongoose.Types.ObjectId(),
-        type: 'coin',
-        symbol: 'eth',
-        precision: 5,
-        from: 'btc',
-        conv: 0.03508241,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },
-      {
-        _id: new mongoose.Types.ObjectId(),
-        type: 'coin',
-        symbol: 'eth',
-        precision: 5,
-        from: 'fcs',
-        conv: 0.01732533,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },,
-      {
-        _id: new mongoose.Types.ObjectId(),
-        type: 'coin',
-        symbol: 'btc',
-        precision: 5,
-        from: 'fcs',
-        conv: 0.00055824,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },{
-        _id: new mongoose.Types.ObjectId(),
-        type: 'coin',
-        symbol: 'eth',
-        precision: 5,
-        from: 'usd',
-        conv: 136.51,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },{
-        _id: new mongoose.Types.ObjectId(),
-        type: 'coin',
-        symbol: 'eth',
-        precision: 5,
-        from: 'usd',
-        conv: 136.51,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      },{
-        _id: new mongoose.Types.ObjectId(),
-        type: 'currency',
-        symbol: 'usd',
-        precision: 5,
-        from: 'eth',
-        conv: 0.00732533,
-        lastModified: now.toUTCString(),
-        dateCreated: now.toUTCString()
-      }, function (err) {
-        if (err) {
-            res.status(500).send({status: 500, errors: err});
-        } else {
-            res.send({status:200, message: 'All seed values added successfully.'});
-        }
-      });
-    }
-  });
-}*/
-
- // TRANSACTIONS
+// TRANSACTIONS
 // Test if theere are any transactions yet. If not, create a set
 
 // BLOCKCHAIN
