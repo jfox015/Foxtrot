@@ -137,7 +137,7 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "lite-server": "^2.4.0",
     "mocha": "^3.5.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "protractor": "^5.4.2",
     "pump": "^3.0.0",
     "sinon": "^3.2.1",
